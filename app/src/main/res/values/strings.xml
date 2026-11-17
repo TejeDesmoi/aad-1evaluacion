@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">aad-1evaluacion</string>
     <string name="xml_local_source">Car_Xml_Source</string>
+    <string name="cache_time">cache_time_cars</string>
 </resources>

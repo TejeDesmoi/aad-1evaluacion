@@ -11,6 +11,8 @@ import edu.iesam.aad_1evaluacion.coches.data.CocheDataRepository
 import edu.iesam.aad_1evaluacion.coches.data.local.CocheXmlLocalDataSource
 import edu.iesam.aad_1evaluacion.core.serialization.GsonJsonSerializer
 import edu.iesam.aad_1evaluacion.coches.domain.Coche
+import edu.iesam.aad_1evaluacion.core.Cache.CacheTTL
+import edu.iesam.aad_1evaluacion.core.time.LocalTime
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +27,8 @@ class MainActivity : AppCompatActivity() {
 
         val cocheDataRepository = CocheDataRepository(
             CocheXmlLocalDataSource(GsonJsonSerializer.create(),
-                this)
+                this,
+                CacheTTL(this, LocalTime()))
         )
 
         cocheDataRepository.save(Coche("1","Ford","Mustang"))

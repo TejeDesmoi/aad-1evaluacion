@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.core.content.edit
 import edu.iesam.aad_1evaluacion.R
 import edu.iesam.aad_1evaluacion.coches.domain.Coche
+import edu.iesam.aad_1evaluacion.core.Cache.AppCache
 import edu.iesam.aad_1evaluacion.core.serialization.JsonSerializer
 
 class CocheXmlLocalDataSource(
     val serializer: JsonSerializer<List<Coche>>,
-    val context: Context
+    val context: Context,
+    val cache: AppCache
 ) {
 
     val sharedPref = context.getSharedPreferences(
@@ -17,10 +19,12 @@ class CocheXmlLocalDataSource(
 
     fun getAll(): List<Coche> {
 
-        val coches =  sharedPref.getString(carKey, null)
+        if (cache.isExpired(carKey,ttl)) {
+            val coches = sharedPref.getString(carKey, null)
 
-        coches?.let {
-            return serializer.fromJson(coches)
+            coches?.let {
+                return serializer.fromJson(coches)
+            }
         }
 
         return emptyList()
@@ -36,13 +40,14 @@ class CocheXmlLocalDataSource(
 
     fun save(coche: Coche){
         val coches = getAll().toMutableList()
-        val coches2 = coches.add(coche)
 
         coches.let {
+            coches.add(coche)
             sharedPref.edit {
                 putString(carKey, serializer.toJson(coches))
                 apply()
             }
+            cache.updateCache(carKey)
         }
     }
 
@@ -54,6 +59,7 @@ class CocheXmlLocalDataSource(
             putString(carKey, serializer.toJson(coches2))
             apply()
         }
+        cache.updateCache(carKey)
     }
 
     fun update(coche: Coche){
@@ -66,10 +72,12 @@ class CocheXmlLocalDataSource(
             putString(carKey, serializer.toJson(coches2))
             apply()
         }
+        cache.updateCache(carKey)
     }
 
     companion object{
         val carKey = "Cars"
+        val ttl: Long = 2 * 1000
     }
 
 }
