@@ -1,26 +1,29 @@
 package edu.iesam.aad_1evaluacion.coches.data
 
+import edu.iesam.aad_1evaluacion.coches.data.local.CocheXmlLocalDataSource
 import edu.iesam.aad_1evaluacion.coches.domain.Coche
 import edu.iesam.aad_1evaluacion.coches.domain.CocheRepository
 
-class CocheDataRepository: CocheRepository {
+class CocheDataRepository(
+    val cocheXmlLocalDataSource: CocheXmlLocalDataSource
+): CocheRepository {
     override fun save(coche: Coche) {
-        TODO("Not yet implemented")
+        cocheXmlLocalDataSource.save(coche)
     }
 
     override fun delete(matricula: String) {
-        TODO("Not yet implemented")
+        cocheXmlLocalDataSource.delete(matricula)
     }
 
     override fun getById(matricula: String): Coche {
-        TODO("Not yet implemented")
+        return cocheXmlLocalDataSource.getById(matricula)
     }
 
     override fun getAll(): List<Coche> {
-        TODO("Not yet implemented")
+        return cocheXmlLocalDataSource.getAll()
     }
 
     override fun update(coche: Coche) {
-        TODO("Not yet implemented")
+        return cocheXmlLocalDataSource.update(coche)
     }
 }
